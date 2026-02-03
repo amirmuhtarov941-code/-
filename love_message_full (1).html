@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Для тебя</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
+body{margin:0;overflow:hidden;background:#000;}
+
+/* Полностью звездное небо */
+.sky {
+  position:absolute;
+  inset:0;
+  background:#000;
+  overflow:hidden;
+  z-index:0;
+}
+.star {
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  opacity:0.8;
+  animation:twinkle 3s infinite alternate;
+}
+@keyframes twinkle {
+ 0% {opacity:0.2;}
+ 50% {opacity:1;}
+ 100% {opacity:0.2;}
+}
+
+/* Сообщения */
+.bubble{
+  position:absolute;
+  max-width:80%;
+  padding:14px 18px;
+  border-radius:22px;
+  font-size:16px;
+  line-height:1.7;
+  opacity:0;
+  transform:translateY(20px);
+  animation:floatUp linear forwards;
+  z-index:1;
+}
+.bubble.me{background:#34b7f1;color:#fff;}
+.bubble.her{background:#e5e5ea;color:#000;}
+@keyframes floatUp{
+ 0%{opacity:0;transform:translateY(40px) scale(0.95)}
+ 10%{opacity:1}
+ 100%{opacity:0;transform:translateY(-150vh) scale(1)}
+}
+</style>
+</head>
+<body>
+
+<div class='sky'></div>
+<script>
+// Генерация звезд
+const sky=document.querySelector('.sky');
+for(let i=0;i<300;i++){
+  const star=document.createElement('div');
+  star.className='star';
+  star.style.left=Math.random()*100+'%';
+  star.style.top=Math.random()*100+'%';
+  star.style.width=1+Math.random()*2+'px';
+  star.style.height=1+Math.random()*2+'px';
+  star.style.animationDuration=2+Math.random()*3+'s';
+  sky.appendChild(star);
+}
+
+const messages=[
+ {text:`Честно, я даже не знаю, с чего начать…\n\nТы дала мне понять, что материальные подарки для тебя не так важны, поэтому я надеюсь, что этим письмом смогу передать то, что чувствую к тебе — насколько это сильно и искренне.\n\nЯ делаю это впервые в жизни, так же как и однажды решился приехать к тебе, поэтому прошу не судить строго.`, from:'me'},
+ {text:`За довольно короткое время ты стала мне очень близка. Я понимаю, что в это сложно поверить, и не прошу тебя верить — но твоя искренность и открытость постепенно растопили тот лёд, который долгое время был в моём сердце.\nСначала я этого боялся, потому что мысль о том, что мы могли бы перестать общаться, была бы для меня невыносимо болезненной. Но твои милые кружочки и наши разговоры всё больше привязывали меня к тебе. Я и сам не заметил, как начал меняться: стал счастливее, увереннее, чаще улыбаться и ценить моменты своей жизни.`, from:'me'},
+ {text:`Билеты, поездка, встреча — всё это было незабываемо и навсегда останется в моём сердце, как бы дальше ни сложилась жизнь. Это мой первый и единственный такой опыт.`, from:'me'},
+ {text:`Я очень переживал — боялся сделать что-то не так или всё испортить, не из-за неуверенности, а потому что ты мне по-настоящему дорога. Я принимаю тебя такой, какая ты есть. Даже если между нами возникали недопонимания или ссоры, я шёл дальше и принимал это, понимая, что без трудностей не бывает ничего настоящего. Мне нужно было работать над собой, и я это осознал.`, from:'me'},
+ {text:`Я хотел всего и сразу, но понял, что так не бывает. Поэтому я делаю всё, что в моих силах, шаг за шагом, чтобы ты сама почувствовала, что мне можно доверять. Ведь я уже доверил тебе самое дорогое, что у меня есть — своё сердце.`, from:'me'},
+ {text:`Я хочу быть твоей опорой и настоящей поддержкой в любую минуту. Хочу, чтобы рядом со мной ты могла быть маленькой девочкой, чтобы тебе не нужно было быть сильной и независимой, чтобы ты могла доверить мне любую грусть и любую радость — быть собой, такой, какая ты есть в глубине души.`, from:'me'},
+ {text:`Я всегда рядом, даже если между нами тысячи километров.`, from:'me'},
+ {text:`Я очень хочу говорить тебе те слова, которые сказал при нашей встрече и когда ты провожала меня. Но я никогда не перейду границы, о которых мы договорились, пока ты сама не захочешь их разрушить. Потому что я уважаю тебя, твоё состояние и твоё личное пространство.`, from:'me'},
+ {text:`Я очень надеюсь, что ты правильно меня поймёшь. Я ни в коем случае не тороплю тебя с каким-либо решением — это всего лишь слова моего сердца и души. Я готов ждать столько, сколько потребуется. Пожалуйста, помни об этом.`, from:'me'},
+ {text:`Спасибо тебе за всё, что ты уже делаешь для меня. Ни одно твоё действие не остаётся незамеченным — я вижу и запоминаю всё, даже мелочи.\nМне было безумно приятно узнать, что ты рассказала обо мне своим родителям и друзьям — это многое для меня значит и дорогого стоит.`, from:'me'},
+ {text:`Умничка, что дочитала до конца. Теперь ты знаешь, что у меня внутри.`, from:'me'}
+];
+
+let currentIndex=0;
+function spawnNextBubble(){
+ if(currentIndex>=messages.length) return;
+ const msg=messages[currentIndex];
+ const bubble=document.createElement('div');
+ bubble.className='bubble '+(msg.from==='me'?'me':'her');
+ bubble.textContent=msg.text;
+ bubble.style.left='10%';
+ bubble.style.bottom='-80px';
+ bubble.style.fontSize='16px';
+ bubble.style.animationDuration='45s';
+ document.body.appendChild(bubble);
+ currentIndex++;
+ setTimeout(spawnNextBubble,8000);
+}
+spawnNextBubble();
+</script>
+
+</body>
+</html>
